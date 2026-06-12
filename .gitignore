@@ -1,0 +1,30 @@
+# === Wagi modelu (za duże dla GitHub, >100 MB) ===
+*.pth
+*.onnx
+
+# === Generowane dane i wyniki (1.4 GB, odtwarzalne skryptami) ===
+artifacts/
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# === Środowiska wirtualne ===
+env/
+.venv/
+venv/
+
+# === LaTeX (pliki pośrednie kompilacji; raport.tex i raport.pdf zostają śledzone) ===
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# === System ===
+.DS_Store
+Thumbs.db

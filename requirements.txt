@@ -1,0 +1,11 @@
+torch
+torchvision
+insightface
+onnxruntime
+opencv-python
+numpy
+scikit-learn
+tqdm
+Pillow
+matplotlib
+# opcjonalnie (krok 3 — restauracja twarzy): gfpgan / realesrgan
