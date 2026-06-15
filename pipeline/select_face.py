@@ -1,8 +1,7 @@
 """Selekcja właściwej twarzy, gdy na obrazie jest ich wiele (utrudnienie #1).
 
 Polityka: faworyzujemy twarz dużą, centralną i pewnie wykrytą. To trik
-test-time — żaden model nie jest dotrenowywany. Dla twarzy "na plakacie"
-dokładamy bramkę liveness (pipeline.liveness).
+test-time — żaden model nie jest dotrenowywany.
 """
 import numpy as np
 

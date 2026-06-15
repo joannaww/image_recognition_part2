@@ -7,11 +7,6 @@ utrudnienia z trudnymi danymi**:
 - **#1 wiele twarzy na zdjęciu** — detekcja wszystkich twarzy + polityka selekcji właściwej
   osoby (duża, centralna, pewnie wykryta) i odrzucanie przypadków niejednoznacznych
 
-> Zakres #1 zawężony do problemu „wiele twarzy → wybierz właściwą". Wątek twarzy
-> na plakatach / anti-spoofing (bramka liveness) jest **poza zakresem** — wymagałby
-> zbioru realnych ataków print/replay. `pipeline/liveness.py` zostaje jako opcjonalny,
-> domyślnie wyłączony (`PipelineConfig.use_liveness=False`).
-
 **Założenie projektu:** backbone ArcFace `iresnet50` (`ms1mv3_arcface_r50.pth`) jest
 **zamrożony — bez dotrenowywania**. Odporność budujemy *trikami test-time*. Cel:
 FRR na próbkach trudnych nie rośnie o >5 pp, TIR nie spada o >5 pp; FAR minimalizujemy.
@@ -23,7 +18,6 @@ obraz → detekcja(wszystkie twarze) → selekcja właściwej(#1)
       → FIQA(#3) → restauracja warunkowa(#3) → align 112² → embedding(+TTA)
       → matcher (galeria multi-embedding, dystans kosinusowy, próg adaptacyjny)
 ```
-(opcjonalna bramka liveness istnieje, ale jest domyślnie wyłączona — patrz wyżej)
 
 Konfiguracja trików: `pipeline/authenticate.py::PipelineConfig`.
 

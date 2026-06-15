@@ -1,6 +1,6 @@
 """Pełny łańcuch przetwarzania jednej próbki -> embedding + diagnostyka.
 
-detect -> select(#1) -> liveness(#1) -> quality(#3) -> restore(#3) -> align -> embed(+TTA)
+detect -> select(#1) -> quality(#3) -> restore(#3) -> align -> embed(+TTA)
 
 Każdy trik ma flagę w `PipelineConfig` -> łatwa ablacja "z trikiem / bez".
 Zwraca obiekt z .embedding (lub None gdy odrzucono) i .info (powody/decyzje).
@@ -10,18 +10,16 @@ from dataclasses import dataclass
 import cv2
 
 from config import IMG_SIZE
-from pipeline import detect_align, select_face, quality, restore, liveness, embed
+from pipeline import detect_align, select_face, quality, restore, embed
 
 
 @dataclass
 class PipelineConfig:
     use_select: bool = True       # selekcja właściwej twarzy (#1)
-    use_liveness: bool = False    # bramka anti-spoof (#1) — placeholder do kroku 4
     use_quality: bool = True      # FIQA -> adaptacyjny próg (#3)
     use_restore: bool = True      # restauracja gdy niska jakość (#3)
     use_tta: bool = True          # test-time augmentation (flip)
     restore_quality_thr: float = 0.45   # restauruj tylko gdy quality < próg
-    liveness_thr: float = 0.5
     ambiguity_margin: float = 0.10
 
 
@@ -46,13 +44,6 @@ def process(img_bgr, cfg: PipelineConfig = PipelineConfig()):
             return AuthResult(None, 0.0, {**info, "rejected": sel["reason"]})
     else:
         face = max(faces, key=lambda f: f.det_score) if faces else None
-
-    # --- liveness (#1) ---
-    if cfg.use_liveness and face is not None:
-        live, lscore = liveness.is_live(work, getattr(face, "bbox", None), cfg.liveness_thr)
-        info["liveness"] = {"live": live, "score": lscore}
-        if not live:
-            return AuthResult(None, 0.0, {**info, "rejected": "spoof"})
 
     # --- crop do oceny jakości (przed restauracją) ---
     if face is not None:
