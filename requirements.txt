@@ -8,4 +8,5 @@ scikit-learn
 tqdm
 Pillow
 matplotlib
+Flask
 # opcjonalnie (krok 3 — restauracja twarzy): gfpgan / realesrgan

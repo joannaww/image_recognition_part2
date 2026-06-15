@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Face Recognition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <h1>Face Recognition</h1>
+        </div>
+        <div class="db-chip">
+          <span id="userCount">{{ users|length }}</span>
+          <span>użytk.</span>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <nav class="tabs" aria-label="Tryb pracy">
+          <button class="tab active" type="button" data-tab="enroll">Rejestracja</button>
+          <button class="tab" type="button" data-tab="verify">Weryfikacja</button>
+          <button class="tab" type="button" data-tab="identify">Identyfikacja</button>
+        </nav>
+
+        <section class="panel active" id="tab-enroll">
+          <form class="tool-form" id="enrollForm" enctype="multipart/form-data">
+            <label>
+              <span>Identyfikator</span>
+              <input name="username" autocomplete="off" placeholder="np. anna_kowalska" required>
+            </label>
+
+            <label>
+              <span>Zdjęcia referencyjne</span>
+              <input name="images" type="file" accept="image/*" multiple required data-preview="enrollPreview">
+            </label>
+
+            <div class="preview-grid" id="enrollPreview"></div>
+            <button class="primary" type="submit">Zarejestruj</button>
+          </form>
+        </section>
+
+        <section class="panel" id="tab-verify">
+          <form class="tool-form" id="verifyForm" enctype="multipart/form-data">
+            <label>
+              <span>Użytkownik</span>
+              <select name="username" id="verifyUser" required>
+                {% for user in users %}
+                <option value="{{ user.name }}">{{ user.name }}</option>
+                {% endfor %}
+              </select>
+            </label>
+
+            <label>
+              <span>Zdjęcie próbki</span>
+              <input name="image" type="file" accept="image/*" required data-preview="verifyPreview">
+            </label>
+
+            <label class="check">
+              <input type="checkbox" name="no_tricks">
+              <span>Baseline</span>
+            </label>
+
+            <div class="preview-grid single" id="verifyPreview"></div>
+            <button class="primary" type="submit">Zweryfikuj</button>
+          </form>
+        </section>
+
+        <section class="panel" id="tab-identify">
+          <form class="tool-form" id="identifyForm" enctype="multipart/form-data">
+            <label>
+              <span>Zdjęcie próbki</span>
+              <input name="image" type="file" accept="image/*" required data-preview="identifyPreview">
+            </label>
+
+            <label class="check">
+              <input type="checkbox" name="no_tricks">
+              <span>Baseline</span>
+            </label>
+
+            <div class="preview-grid single" id="identifyPreview"></div>
+            <button class="primary" type="submit">Identyfikuj</button>
+          </form>
+        </section>
+      </section>
+
+      <aside class="results">
+        <section class="result-box">
+          <h2>Wynik</h2>
+          <div id="result" class="empty">Brak wykonanej operacji.</div>
+        </section>
+
+        <section class="users-box">
+          <div class="section-head">
+            <h2>Baza</h2>
+            <small>{{ db_path }}</small>
+          </div>
+          <div class="user-list" id="userList">
+            {% for user in users %}
+            <div class="user-row">
+              <strong>{{ user.name }}</strong>
+              <span>{{ user.embeddings }} wzorc.</span>
+            </div>
+            {% else %}
+            <div class="empty">Baza jest pusta.</div>
+            {% endfor %}
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
